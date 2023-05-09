@@ -1,8 +1,8 @@
 import { Bar } from "react-chartjs-2";
-import Chart, { CategoryScale } from "chart.js/auto";
+import { Chart, registerables } from 'chart.js';
 import { useState, useRef, useEffect } from "react";
 
-Chart.register(CategoryScale);
+Chart.register(...registerables);
 
 type ChartDataPoint = number | number[] | null | undefined | Chart.ChartPoint[];
 type ChartDataLabel = string | number | string[] | number[] | Date | Date[] | moment.Moment | moment.Moment[];
