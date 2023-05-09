@@ -40,6 +40,8 @@ function App() {
     }
   }, []);
 
+  console.log("👨‍💻Developed by Saurav Hathi\n🚀https://github.com/sauravhathi/word-frequency-histogram")
+
   // Handle submit method to fetch data and update state
   const handleSubmit = async () => {
     setLoading(true);
@@ -168,6 +170,16 @@ function App() {
           </div>
         )}
       </div>
+      <footer className="flex items-center justify-center w-full h-24 border-t">
+        <a
+          className="flex items-center justify-center"
+          href="https://github.com/sauravhathi"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Developed by Saurav Hathi
+        </a>
+      </footer>
     </>
   );
 }
