@@ -6,6 +6,12 @@ This project is a Next.js application that fetches contents of a text file from 
 
 A live demo of application can be found at [https://word-frequency-histogram.vercel.app/](https://word-frequency-histogram.vercel.app/).
 
+## Screenshots
+
+![image](https://github.com/sauravhathi/word-frequency-histogram/assets/61316762/ad7c2979-8252-4f76-b1bf-abc1a67d8b58)
+
+![image](https://github.com/sauravhathi/word-frequency-histogram/assets/61316762/e635e364-6377-46aa-8502-f31af8169898)
+
 ## Features
 
 - On first load, application displays a **Get Data** button.
