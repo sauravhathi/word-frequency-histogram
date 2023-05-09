@@ -26,13 +26,13 @@ A live demo of application can be found at [https://word-frequency-histogram.ver
 1. Clone repository from GitHub:
 
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/sauravhathi/word-frequency-histogram.git
     ```
 
 2. Navigate to project directory:
 
     ```bash
-    cd <project-directory>
+    cd word-frequency-histogram
     ```
 
 3. Install dependencies:
@@ -70,7 +70,7 @@ To contribute to this project, follow these steps:
 2. Clone your forked repository to your local machine:
 
     ```bash
-    git clone 
+    git clone <repository>
     ```
 
 3. Create a new branch for your feature or bug fix:
@@ -97,6 +97,6 @@ To contribute to this project, follow these steps:
 
 ## License
 
-This project is licensed under MIT License.
+This project is licensed under [MIT License](https://github.com/sauravhathi/word-frequency-histogram/blob/main/LICENSE).
 
 You are free to modify and use code in this project for personal or commercial purposes.
