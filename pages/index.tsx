@@ -1,6 +1,7 @@
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from 'chart.js';
 import { useState, useRef, useEffect } from "react";
+import Head from "next/head";
 
 Chart.register(...registerables);
 
@@ -88,78 +89,86 @@ function App() {
   };
 
   return (
-    <div className={`h-screen flex flex-col items-center justify-center mb-8 px-2 md:px-40`}>
-      <h1 className="text-4xl font-bold text-center">Word Frequency Histogram</h1>
-      <button
-        ref={buttonRef}
-        className={`${loading ? "bg-gray-400" : data ? "bg-red-500" : "bg-blue-500"
-          } text-white px-4 py-2 rounded mt-8 block mx-auto focus:outline-none`}
-        onClick={handleSubmit}
-        disabled={loading}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleSubmit();
-          }
-        }}
-      >
-        {loading ? "Loading..." : data ? "Refresh" : "Get Data"}
-      </button>
-      {data && (
-        <div className="flex-grow w-full">
-          <Bar
-            data={data}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                title: {
-                  display: true,
-                  text: 'Word Frequency',
-                  font: {
-                    size: 20,
-                    weight: 'bold'
-                  }
-                }
-              },
-              scales: {
-                x: {
-                  type: "category",
+    <>
+      <Head>
+        <title>Word Frequency Histogram</title>
+        <meta name="description" content="Word Frequency Histogram" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div className={`h-screen flex flex-col items-center justify-center mb-8 px-2 md:px-40`}>
+        <h1 className="text-4xl font-bold text-center">Word Frequency Histogram</h1>
+        <button
+          ref={buttonRef}
+          className={`${loading ? "bg-gray-400" : data ? "bg-red-500" : "bg-blue-500"
+            } text-white px-4 py-2 rounded mt-8 block mx-auto focus:outline-none`}
+          onClick={handleSubmit}
+          disabled={loading}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit();
+            }
+          }}
+          aria-label={loading ? "Loading..." : data ? "Refresh" : "Get Data"}
+        >
+          {loading ? "Loading..." : data ? "Refresh" : "Get Data"}
+        </button>
+        {data && (
+          <div className="flex-grow w-full" aria-label="Histogram Chart">
+            <Bar
+              data={data}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
                   title: {
                     display: true,
-                    text: 'Word',
+                    text: 'Word Frequency',
                     font: {
-                      size: 16,
+                      size: 20,
                       weight: 'bold'
-                    }
-                  },
-                  ticks: {
-                    font: {
-                      size: 12
                     }
                   }
                 },
-                y: {
-                  title: {
-                    display: true,
-                    text: 'Frequency',
-                    font: {
-                      size: 16,
-                      weight: 'bold'
+                scales: {
+                  x: {
+                    type: "category",
+                    title: {
+                      display: true,
+                      text: 'Word',
+                      font: {
+                        size: 16,
+                        weight: 'bold'
+                      }
+                    },
+                    ticks: {
+                      font: {
+                        size: 12
+                      }
                     }
                   },
-                  ticks: {
-                    font: {
-                      size: 12
+                  y: {
+                    title: {
+                      display: true,
+                      text: 'Frequency',
+                      font: {
+                        size: 16,
+                        weight: 'bold'
+                      }
                     },
-                    precision: 0
+                    ticks: {
+                      font: {
+                        size: 12
+                      },
+                      precision: 0
+                    }
                   }
                 }
-              }
-            }}
-          />
-        </div>
-      )}
-    </div>
+              }}
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
