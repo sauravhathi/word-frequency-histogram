@@ -1,38 +1,102 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Word Frequency Histogram
 
-## Getting Started
+This project is a Next.js application that fetches contents of a text file from [https://www.terriblytinytales.com/test.txt](https://www.terriblytinytales.com/test.txt), parses content to find frequency of occurrence of each word, and plots a histogram on frontend using Next.js and React Chart.js 2 library.
 
-First, run the development server:
+## Demo ✈️
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+A live demo of application can be found at [https://word-frequency-histogram.vercel.app/](https://word-frequency-histogram.vercel.app/).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- On first load, application displays a **Get Data** button.
+- Pressing **Enter** or clicking on **Get Data** button triggers a fetch request to retrieve text content from **https://www.terriblytinytales.com/test.txt**.
+- text content is then parsed, and frequency of occurrence of **each word, regardless of case,** is calculated.
+- Before counting frequency, any punctuation marks including ., ,, !, ?, ;, :, (, ), ", ', and - are **removed** from each word.
+-  **Top 20** words with **highest occurrence frequency** are displayed in a ***histogram***.
+- X-axis represents top 20 words, and Y-axis represents number of times each word occurred in file. histogram is generated using React Chart.js 2 library.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Libraries and Plugins Used
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- Next.js 🚀
+- React ⚛️
+- React Chart.js 2 📊
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+1. Clone repository from GitHub:
 
-To learn more about Next.js, take a look at the following resources:
+    ```bash
+    git clone <repository-url>
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Navigate to project directory:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    ```bash
+    cd <project-directory>
+    ```
 
-## Deploy on Vercel
+3. Install dependencies:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    ```bash
+    npm install
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+    # or
+
+    yarn
+    ```
+
+## Usage
+
+1. Run development server:
+
+    ```bash
+    npm run dev
+
+    # or
+
+    yarn dev
+    ```
+
+2. Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+3. Click on **Get Data** button to fetch text content and generate histogram.
+
+## Contributing
+
+Contributions are welcome! If you find any issues or have suggestions for improvements, please feel free to submit a pull request or open an issue on GitHub repository.
+
+To contribute to this project, follow these steps:
+
+1. Fork repository on GitHub.
+2. Clone your forked repository to your local machine:
+
+    ```bash
+    git clone 
+    ```
+
+3. Create a new branch for your feature or bug fix:
+
+    ```bash
+    git checkout -b <branch-name>
+    ```
+
+4. Make your changes and commit them with descriptive commit messages:
+
+    ```bash
+    git commit -m "<commit-message>"
+    ```
+
+5. Push your changes to your forked repository:
+
+    ```bash
+    git push origin <branch-name>
+    ```
+
+6. Open a pull request on original repository and describe changes you made.
+7. Wait for feedback and discussion on your pull request. Make any necessary changes based on feedback.
+8. Once your pull request is approved, it will be merged into main repository.
+
+## License
+
+This project is licensed under MIT License.
+
+You are free to modify and use code in this project for personal or commercial purposes.

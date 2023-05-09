@@ -1,118 +1,166 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import { Bar } from "react-chartjs-2";
+import Chart, { CategoryScale } from "chart.js/auto";
+import { useState, useRef, useEffect } from "react";
 
-const inter = Inter({ subsets: ['latin'] })
+Chart.register(CategoryScale);
 
-export default function Home() {
+type ChartDataPoint = number | number[] | null | undefined | Chart.ChartPoint[];
+type ChartDataLabel = string | number | string[] | number[] | Date | Date[] | moment.Moment | moment.Moment[];
+
+// Chart data type
+type ChartData = {
+  labels: ChartDataLabel[];
+  datasets: {
+    label: string;
+    data: ChartDataPoint[];
+    backgroundColor: string[];
+    barPercentage: number;
+    categoryPercentage: number;
+  }[];
+};
+
+// Initial state value
+const initialData: ChartData | null | undefined = null;
+
+// Frequency type
+type frequency = {
+  [key: string]: number;
+};
+
+function App() {
+  const [data, setData] = useState<ChartData | null | undefined>(initialData); // chart data state
+  const [loading, setLoading] = useState<boolean>(false); // loading state for button
+  const buttonRef = useRef<HTMLButtonElement | null>(null); // ref for button to focus on load and on refresh click (for accessibility)
+
+  // Focus on button on load for accessibility
+  useEffect(() => {
+    if (buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  }, []);
+
+  // Handle submit method to fetch data and update state
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "https://www.terriblytinytales.com/test.txt"
+      );
+      const text = await response.text(); // get text content
+      const words = text.split(/\s+/); // split text into words
+      const frequency: frequency = {};
+      for (let i = 0; i < words.length; i++) {
+        let word = words[i].toLowerCase().replace(/[.,!?;:()"'-]/g, ""); // remove punctuation and convert to lowercase for case-insensitive comparison
+        if (word) {
+          frequency[word] = (frequency[word] || 0) + 1; // increment frequency of word if it exists, else set it to 1
+        }
+      }
+      const sorted = Object.entries(frequency).sort((a, b) => b[1] - a[1]); // sort words by frequency in descending order
+      const top20 = sorted.slice(0, 20); // get top 20 words
+      const labels = top20.map((pair) => pair[0]); // get labels for x-axis
+      const values = top20.map((pair) => pair[1]); // get values for y-axis
+
+      // generate random colors for bars in chart (for fun)
+      const colors = top20.map(() =>
+        `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
+          Math.random() * 256
+        )}, ${Math.floor(Math.random() * 256)}, 0.5)`
+      );
+
+      // update state with new data
+      setData({
+        labels,
+        datasets: [
+          {
+            label: "Word Frequency",
+            data: values,
+            backgroundColor: colors,
+            barPercentage: 1,
+            categoryPercentage: 1,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className={`h-screen flex flex-col items-center justify-center mb-8 px-2 md:px-40`}>
+      <h1 className="text-4xl font-bold text-center">Word Frequency Histogram</h1>
+      <button
+        ref={buttonRef}
+        className={`${loading ? "bg-gray-400" : data ? "bg-red-500" : "bg-blue-500"
+          } text-white px-4 py-2 rounded mt-8 block mx-auto focus:outline-none`}
+        onClick={handleSubmit}
+        disabled={loading}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSubmit();
+          }
+        }}
+      >
+        {loading ? "Loading..." : data ? "Refresh" : "Get Data"}
+      </button>
+      {data && (
+        <div className="flex-grow w-full">
+          <Bar
+            data={data}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Word Frequency',
+                  font: {
+                    size: 20,
+                    weight: 'bold'
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  type: "category",
+                  title: {
+                    display: true,
+                    text: 'Word',
+                    font: {
+                      size: 16,
+                      weight: 'bold'
+                    }
+                  },
+                  ticks: {
+                    font: {
+                      size: 12
+                    }
+                  }
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: 'Frequency',
+                    font: {
+                      size: 16,
+                      weight: 'bold'
+                    }
+                  },
+                  ticks: {
+                    font: {
+                      size: 12
+                    },
+                    precision: 0
+                  }
+                }
+              }
+            }}
+          />
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      )}
+    </div>
+  );
 }
+
+export default App;
